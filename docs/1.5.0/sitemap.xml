@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+    
+    <url>
+     <loc>/</loc>
+     <lastmod>2017-12-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    
+
+    
+    <url>
+     <loc>/1.-What-is-it/</loc>
+     <lastmod>2017-12-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    
+
+    
+    <url>
+     <loc>/2.-Getting-started/</loc>
+     <lastmod>2017-12-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    
+
+    
+    <url>
+     <loc>/3.-Advanced-usage/</loc>
+     <lastmod>2017-12-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    
+
+    
+    <url>
+     <loc>/4.-OTA/</loc>
+     <lastmod>2017-12-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    
+
+    
+    <url>
+     <loc>/5.-JSON-configuration-file/</loc>
+     <lastmod>2017-12-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    
+
+    
+    <url>
+     <loc>/6.-Configuration-API/</loc>
+     <lastmod>2017-12-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    
+
+    
+    <url>
+     <loc>/7.-API-reference/</loc>
+     <lastmod>2017-12-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    
+
+    
+    <url>
+     <loc>/8.-Limitations-and-known-issues/</loc>
+     <lastmod>2017-12-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    
+
+    
+    <url>
+     <loc>/9.-Troubleshooting/</loc>
+     <lastmod>2017-12-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    
+
+    
+    <url>
+     <loc>/README/</loc>
+     <lastmod>2017-12-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    
+
+</urlset>

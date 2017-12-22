@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+    
+    <url>
+     <loc>/</loc>
+     <lastmod>2017-12-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    
+
+    
+        
+    <url>
+     <loc>/quickstart/what-is-it/</loc>
+     <lastmod>2017-12-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/quickstart/getting-started/</loc>
+     <lastmod>2017-12-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    
+
+    
+        
+    <url>
+     <loc>/advanced-usage/built-in-led/</loc>
+     <lastmod>2017-12-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/advanced-usage/branding/</loc>
+     <lastmod>2017-12-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/advanced-usage/events/</loc>
+     <lastmod>2017-12-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/advanced-usage/logging/</loc>
+     <lastmod>2017-12-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/advanced-usage/streaming-operator/</loc>
+     <lastmod>2017-12-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/advanced-usage/input-handlers/</loc>
+     <lastmod>2017-12-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/advanced-usage/broadcast/</loc>
+     <lastmod>2017-12-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/advanced-usage/custom-settings/</loc>
+     <lastmod>2017-12-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/advanced-usage/resetting/</loc>
+     <lastmod>2017-12-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/advanced-usage/standalone-mode/</loc>
+     <lastmod>2017-12-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/advanced-usage/magic-bytes/</loc>
+     <lastmod>2017-12-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/advanced-usage/range-properties/</loc>
+     <lastmod>2017-12-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/advanced-usage/deep-sleep/</loc>
+     <lastmod>2017-12-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/advanced-usage/miscellaneous/</loc>
+     <lastmod>2017-12-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/advanced-usage/ui-bundle/</loc>
+     <lastmod>2017-12-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    
+
+    
+        
+    <url>
+     <loc>/configuration/json-configuration-file/</loc>
+     <lastmod>2017-12-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/configuration/http-json-api/</loc>
+     <lastmod>2017-12-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    
+
+    
+        
+    <url>
+     <loc>/others/ota-configuration-updates/</loc>
+     <lastmod>2017-12-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/others/homie-implementation-specifics/</loc>
+     <lastmod>2017-12-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/others/limitations-and-known-issues/</loc>
+     <lastmod>2017-12-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/others/troubleshooting/</loc>
+     <lastmod>2017-12-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/others/cpp-api-reference/</loc>
+     <lastmod>2017-12-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/others/upgrade-guide-from-v1-to-v2/</loc>
+     <lastmod>2017-12-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>/others/community-projects/</loc>
+     <lastmod>2017-12-22</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    
+
+</urlset>

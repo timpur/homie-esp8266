@@ -1,0 +1,449 @@
+{
+    "docs": [
+        {
+            "location": "/", 
+            "text": "Welcome to the Homie for ESP8266 docs. This will help you to understand the framework and to use it in an effective manner.\n\n\nThis documentation is valid for Homie \nv1.5.0\n\n\n\n\n1. \nWhat is it?\n\n\n2. \nGetting started\n\n\n3. \nAdvanced usage\n\n\n4. \nOTA\n\n\n5. \nJSON configuration file\n\n\n6. \nConfiguration API\n\n\n7. \nAPI reference\n\n\n8. \nLimitations and known issues\n\n\n9. \nTroubleshooting", 
+            "title": "Home"
+        }, 
+        {
+            "location": "/#1-what-is-it", 
+            "text": "", 
+            "title": "1. What is it?"
+        }, 
+        {
+            "location": "/#2-getting-started", 
+            "text": "", 
+            "title": "2. Getting started"
+        }, 
+        {
+            "location": "/#3-advanced-usage", 
+            "text": "", 
+            "title": "3. Advanced usage"
+        }, 
+        {
+            "location": "/#4-ota", 
+            "text": "", 
+            "title": "4. OTA"
+        }, 
+        {
+            "location": "/#5-json-configuration-file", 
+            "text": "", 
+            "title": "5. JSON configuration file"
+        }, 
+        {
+            "location": "/#6-configuration-api", 
+            "text": "", 
+            "title": "6. Configuration API"
+        }, 
+        {
+            "location": "/#7-api-reference", 
+            "text": "", 
+            "title": "7. API reference"
+        }, 
+        {
+            "location": "/#8-limitations-and-known-issues", 
+            "text": "", 
+            "title": "8. Limitations and known issues"
+        }, 
+        {
+            "location": "/#9-troubleshooting", 
+            "text": "", 
+            "title": "9. Troubleshooting"
+        }, 
+        {
+            "location": "/1.-What-is-it/", 
+            "text": "What is it?\n\n\nHomie for ESP8266 is an ESP8266 for Arduino implementation of \nHomie\n, a thin and simple MQTT convention for the IoT. More than that, it's also a full-featured framework to get started with your IoT project very quickly. Simply put, you don't have to manage yourself the connection/reconnection to the Wi-Fi/MQTT. You don't even have to hard-code credentials in your sketch: this can be done using a simple JSON API. Everything is handled internally, by Homie for ESP8266.\n\n\nYou guessed it, the purpose of Homie for ESP8266 is to simplify the development of connected objects.", 
+            "title": "What is it?"
+        }, 
+        {
+            "location": "/1.-What-is-it/#what-is-it", 
+            "text": "Homie for ESP8266 is an ESP8266 for Arduino implementation of  Homie , a thin and simple MQTT convention for the IoT. More than that, it's also a full-featured framework to get started with your IoT project very quickly. Simply put, you don't have to manage yourself the connection/reconnection to the Wi-Fi/MQTT. You don't even have to hard-code credentials in your sketch: this can be done using a simple JSON API. Everything is handled internally, by Homie for ESP8266.  You guessed it, the purpose of Homie for ESP8266 is to simplify the development of connected objects.", 
+            "title": "What is it?"
+        }, 
+        {
+            "location": "/2.-Getting-started/", 
+            "text": "Getting started\n\n\nThis \nGetting Started\n guide assumes you have an ESP8266 board with an user-configurable LED, and an user programmable button, like a NodeMCU DevKit 1.0, for example. These restrictions can be lifted. (see \nAdvanced usage\n)\n\n\nTo use Homie for ESP8266, you will need:\n\n\n\n\nAn ESP8266\n\n\nThe Arduino IDE for ESP8266 (version 2.2.0 minimum)\n\n\nBasic knowledge of the Arduino environment (upload a sketch, import libraries, ...)\n\n\nTo understand \nthe Homie convention\n\n\n\n\nInstalling Homie for ESP8266\n\n\nThere are two ways to install Homie for ESP8266.\n\n\n1a. For the Arduino IDE\n\n\n\n\nDownload the \nlatest release\n\n\nLoad the \n.zip\n with \nSketch \u2192 Include Library \u2192 Add .ZIP Library\n\n\n\n\nHomie for ESP8266 has 3 dependencies: \nArduinoJson\n, \nBounce2\n and \nPubSubClient\n. You can install them through the Arduino IDE, with \nSketch \u2192 Include Library \u2192 Manage Libraries\n. Be sure the installed version is \n= 5.0.8 for \nArduinoJson\n, \n= 2.0 for \nBounce2\n, \n= 2.5 for \nPubSubClient\n.\n\n\n1b. With \nPlatformIO\n\n\nIn a terminal, run \nplatformio lib install 555\n.\n\n\nDependencies are installed automatically.\n\n\nBare minimum sketch\n\n\n#include\n \nHomie.h\n\n\n\nvoid\n \nsetup\n()\n \n{\n\n  \nHomie\n.\nsetup\n();\n\n\n}\n\n\n\nvoid\n \nloop\n()\n \n{\n\n  \nHomie\n.\nloop\n();\n\n\n}\n\n\n\n\n\nThis is the bare minimum needed for Homie for ESP8266 to work correctly.\nIf you upload this sketch, you will notice the LED of the ESP8266 will light on \n. This is because you are in \nconfiguration\n mode.\n\n\nHomie for ESP8266 has 3 modes of operation:\n\n\n\n\n\n\nThe \nconfiguration\n mode is the initial one. It spawns an AP and an HTTP webserver exposing a JSON API. To interact with it, you have to connect to the AP. Then, an HTTP client can get the list of available Wi-Fi networks, and send the credentials (like the Wi-Fi SSID, the Wi-Fi password, ...). Once the device receives the credentials, it boots into \nnormal\n mode.\n\n\n\n\n\n\nThe \nnormal\n mode is the mode the device will be most of the time. It connects to the Wi-Fi, to the MQTT, it sends initial informations to the Homie server (like the local IP, the version of the firmware currently running, ...) and it subscribes from the MQTT to properties change. The device can return to \nconfiguration\n mode in different ways (press of a button or custom function, see \n3. Advanced usage\n).\n\n\n\n\n\n\nThe \nOTA\n mode is triggered from the \nnormal\n mode when the MQTT server sends a version different from the current firmware version. It will reach the OTA HTTP server and flash the latest firmware available. When it ends (either a success or a failure), it returns to \nnormal\n mode.\n\n\n\n\n\n\nVery important:\n As a rule of thumb, never block the device with blocking code for more than 50ms or so.\n Otherwise, you may very probably experience unexpected behaviors.\n\n\nConnecting to the AP and configuring the device\n\n\nHomie for ESP8266 has spawned a secure AP named \nHomie-xxxxxxxx\n. For example, if the AP is named \nHomie-c631f278\n, the AP password is \nc631f278\n. Connect to it.\n\n\nNote\n: This \nc631f278\n ID is unique to each device, and you cannot change it. If you reflash a new sketch, this ID won't change.\n\n\nOnce connected, the webserver is available at \nhttp://homie.config\n. To bypass the built-in DNS server, you can reach directly \n192.168.1.1\n. You can then configure the device using the \nConfiguration API\n. When the device receives its configuration, it will reboot to \nnormal\n mode.\n\n\nUnderstanding what happens in \nnormal\n mode\n\n\nVisual codes\n\n\nWhen the device boots in \nnormal\n mode, it will start blinking:\n\n\n\n\n Slowly when connecting to the Wi-Fi\n\n\n Faster when connecting to the MQTT broker\n\n\n\n\nThis way, you can have a quick feedback on what's going on. If both connections are established, the LED will stay off. Note the device will also blink during the automatic reconnection, if the connection to the Wi-Fi or the MQTT broker is lost.\n\n\nUnder the hood\n\n\nAlthough the sketch looks like it does not do anything, it actually does quite a lot:\n\n\n\n\nIt automatically connects to the Wi-Fi and MQTT broker. No more network boilerplate code\n\n\nIt exposes the Homie device on MQTT (as devices / \ndevice ID\n, e.g. \ndevices/c631f278\n).\n\n\nIt subscribes to the special device property \n$ota\n, automatically rebooting in OTA mode if OTA is available\n\n\nIt checks for a button press on the ESP8266, to return to \nconfiguration\n mode\n\n\n\n\nCreating an useful sketch\n\n\nNow that we understand how Homie for ESP8266 works, let's create an useful sketch. We want to create a smart light.\n\n\n#include\n \nHomie.h\n\n\n\nconst\n \nint\n \nPIN_RELAY\n \n=\n \n5\n;\n\n\n\nHomieNode\n \nlightNode\n(\nlight\n,\n \nswitch\n);\n\n\n\nbool\n \nlightOnHandler\n(\nString\n \nvalue\n)\n \n{\n\n  \nif\n \n(\nvalue\n \n==\n \ntrue\n)\n \n{\n\n    \ndigitalWrite\n(\nPIN_RELAY\n,\n \nHIGH\n);\n\n    \nHomie\n.\nsetNodeProperty\n(\nlightNode\n,\n \non\n,\n \ntrue\n);\n \n// Update the state of the light\n\n    \nSerial\n.\nprintln\n(\nLight is on\n);\n\n  \n}\n \nelse\n \nif\n \n(\nvalue\n \n==\n \nfalse\n)\n \n{\n\n    \ndigitalWrite\n(\nPIN_RELAY\n,\n \nLOW\n);\n\n    \nHomie\n.\nsetNodeProperty\n(\nlightNode\n,\n \non\n,\n \nfalse\n);\n\n    \nSerial\n.\nprintln\n(\nLight is off\n);\n\n  \n}\n \nelse\n \n{\n\n    \nreturn\n \nfalse\n;\n\n  \n}\n\n\n  \nreturn\n \ntrue\n;\n\n\n}\n\n\n\nvoid\n \nsetup\n()\n \n{\n\n  \npinMode\n(\nPIN_RELAY\n,\n \nOUTPUT\n);\n\n  \ndigitalWrite\n(\nPIN_RELAY\n,\n \nLOW\n);\n\n\n  \nHomie\n.\nsetFirmware\n(\nawesome-relay\n,\n \n1.0.0\n);\n\n  \nlightNode\n.\nsubscribe\n(\non\n,\n \nlightOnHandler\n);\n\n  \nHomie\n.\nregisterNode\n(\nlightNode\n);\n\n  \nHomie\n.\nsetup\n();\n\n\n}\n\n\n\nvoid\n \nloop\n()\n \n{\n\n  \nHomie\n.\nloop\n();\n\n\n}\n\n\n\n\n\nAlright, step by step:\n\n\n\n\nWe create a node with an ID of \nlight\n and a type of \nswitch\n with \nHomieNode lightNode(\nlight\n, \nswitch\n)\n\n\nWe set the name and the version of the firmware with \nHomie.setFirmware(\nawesome-light\n ,\n1.0.0\n);\n\n\nWe want our \nlight\n node to subscribe to the \non\n property. We do that with \nlightNode.subscribe(\non\n, lightOnHandler);\n. The \nlightOnHandler\n function will be called when the value of this property is changed\n\n\nWe tell Homie for ESP8266 to expose our \nlight\n node by registering it. We do this with \nHomie.registerNode(lightNode);\n\n\nIn the \nlightOnHandler\n function, we want to update the state of the \nlight\n node. We do this with \nHomie.setNodeProperty(lightNode, \non\n, \ntrue\n);\n\n\n\n\nIn about thirty SLOC, we have achieved to create a smart light, without any hard-coded credentials, with automatic reconnection in case of network failure, and with OTA support. Not bad, right?\n\n\nCreating a sensor node\n\n\nIn the previous example sketch, we were reacting on property changes. But what if we want, for example, to send a temperature every 5 minute? We could do this in the Arduino \nloop()\n function. But then, we would have to check if we are in \nnormal\n mode, and we would have to ensure the network connection is up before sending any property. Boring.\n\n\nFortunately, Homie for ESP8266 provides an easy way to do that.\n\n\n#include\n \nHomie.h\n\n\n\nconst\n \nint\n \nTEMPERATURE_INTERVAL\n \n=\n \n300\n;\n\n\n\nunsigned\n \nlong\n \nlastTemperatureSent\n \n=\n \n0\n;\n\n\n\nHomieNode\n \ntemperatureNode\n(\ntemperature\n,\n \ntemperature\n);\n\n\n\nvoid\n \nsetupHandler\n()\n \n{\n\n  \n// Do what you want to prepare your sensor\n\n\n}\n\n\n\nvoid\n \nloopHandler\n()\n \n{\n\n  \nif\n \n(\nmillis\n()\n \n-\n \nlastTemperatureSent\n \n=\n \nTEMPERATURE_INTERVAL\n \n*\n \n1000UL\n \n||\n \nlastTemperatureSent\n \n==\n \n0\n)\n \n{\n\n    \nfloat\n \ntemperature\n \n=\n \n22\n;\n \n// Fake temperature here, for the example\n\n    \nSerial\n.\nprint\n(\nTemperature: \n);\n\n    \nSerial\n.\nprint\n(\ntemperature\n);\n\n    \nSerial\n.\nprintln\n(\n \u00b0C\n);\n\n    \nif\n \n(\nHomie\n.\nsetNodeProperty\n(\ntemperatureNode\n,\n \ntemperature\n,\n \nString\n(\ntemperature\n),\n \ntrue\n))\n \n{\n\n      \nlastTemperatureSent\n \n=\n \nmillis\n();\n\n    \n}\n \nelse\n \n{\n\n      \nSerial\n.\nprintln\n(\nSending failed\n);\n\n    \n}\n\n  \n}\n\n\n}\n\n\n\nvoid\n \nsetup\n()\n \n{\n\n  \nHomie\n.\nsetFirmware\n(\nawesome-temperature\n,\n \n1.0.0\n);\n\n  \nHomie\n.\nregisterNode\n(\ntemperatureNode\n);\n\n  \nHomie\n.\nsetSetupFunction\n(\nsetupHandler\n);\n\n  \nHomie\n.\nsetLoopFunction\n(\nloopHandler\n);\n\n  \nHomie\n.\nsetup\n();\n\n\n}\n\n\n\nvoid\n \nloop\n()\n \n{\n\n  \nHomie\n.\nloop\n();\n\n\n}\n\n\n\n\n\nThe only new things here are the \nHomie.setSetupFunction(setupHandler);\n and \nHomie.setLoopFunction(loopHandler);\n calls. The setup function will be called once, when the device is in \nnormal\n mode and the network connection is up. The loop function will be called everytime, when the device is in \nnormal\n mode and the network connection is up. This provides a nice level of abstraction.\n\n\nNow that you understand the basic usage of Homie for ESP8266, you can head on to the \nAdvanced usage\n page to learn about more powerful features like input handlers and the event system.", 
+            "title": "Getting started"
+        }, 
+        {
+            "location": "/2.-Getting-started/#getting-started", 
+            "text": "This  Getting Started  guide assumes you have an ESP8266 board with an user-configurable LED, and an user programmable button, like a NodeMCU DevKit 1.0, for example. These restrictions can be lifted. (see  Advanced usage )  To use Homie for ESP8266, you will need:   An ESP8266  The Arduino IDE for ESP8266 (version 2.2.0 minimum)  Basic knowledge of the Arduino environment (upload a sketch, import libraries, ...)  To understand  the Homie convention", 
+            "title": "Getting started"
+        }, 
+        {
+            "location": "/2.-Getting-started/#installing-homie-for-esp8266", 
+            "text": "There are two ways to install Homie for ESP8266.", 
+            "title": "Installing Homie for ESP8266"
+        }, 
+        {
+            "location": "/2.-Getting-started/#1a-for-the-arduino-ide", 
+            "text": "Download the  latest release  Load the  .zip  with  Sketch \u2192 Include Library \u2192 Add .ZIP Library   Homie for ESP8266 has 3 dependencies:  ArduinoJson ,  Bounce2  and  PubSubClient . You can install them through the Arduino IDE, with  Sketch \u2192 Include Library \u2192 Manage Libraries . Be sure the installed version is  = 5.0.8 for  ArduinoJson ,  = 2.0 for  Bounce2 ,  = 2.5 for  PubSubClient .", 
+            "title": "1a. For the Arduino IDE"
+        }, 
+        {
+            "location": "/2.-Getting-started/#1b-with-platformio", 
+            "text": "In a terminal, run  platformio lib install 555 .  Dependencies are installed automatically.", 
+            "title": "1b. With PlatformIO"
+        }, 
+        {
+            "location": "/2.-Getting-started/#bare-minimum-sketch", 
+            "text": "#include   Homie.h  void   setup ()   { \n   Homie . setup ();  }  void   loop ()   { \n   Homie . loop ();  }   This is the bare minimum needed for Homie for ESP8266 to work correctly.\nIf you upload this sketch, you will notice the LED of the ESP8266 will light on  . This is because you are in  configuration  mode.  Homie for ESP8266 has 3 modes of operation:    The  configuration  mode is the initial one. It spawns an AP and an HTTP webserver exposing a JSON API. To interact with it, you have to connect to the AP. Then, an HTTP client can get the list of available Wi-Fi networks, and send the credentials (like the Wi-Fi SSID, the Wi-Fi password, ...). Once the device receives the credentials, it boots into  normal  mode.    The  normal  mode is the mode the device will be most of the time. It connects to the Wi-Fi, to the MQTT, it sends initial informations to the Homie server (like the local IP, the version of the firmware currently running, ...) and it subscribes from the MQTT to properties change. The device can return to  configuration  mode in different ways (press of a button or custom function, see  3. Advanced usage ).    The  OTA  mode is triggered from the  normal  mode when the MQTT server sends a version different from the current firmware version. It will reach the OTA HTTP server and flash the latest firmware available. When it ends (either a success or a failure), it returns to  normal  mode.    Very important:  As a rule of thumb, never block the device with blocking code for more than 50ms or so.  Otherwise, you may very probably experience unexpected behaviors.", 
+            "title": "Bare minimum sketch"
+        }, 
+        {
+            "location": "/2.-Getting-started/#connecting-to-the-ap-and-configuring-the-device", 
+            "text": "Homie for ESP8266 has spawned a secure AP named  Homie-xxxxxxxx . For example, if the AP is named  Homie-c631f278 , the AP password is  c631f278 . Connect to it.  Note : This  c631f278  ID is unique to each device, and you cannot change it. If you reflash a new sketch, this ID won't change.  Once connected, the webserver is available at  http://homie.config . To bypass the built-in DNS server, you can reach directly  192.168.1.1 . You can then configure the device using the  Configuration API . When the device receives its configuration, it will reboot to  normal  mode.", 
+            "title": "Connecting to the AP and configuring the device"
+        }, 
+        {
+            "location": "/2.-Getting-started/#understanding-what-happens-in-normal-mode", 
+            "text": "", 
+            "title": "Understanding what happens in normal mode"
+        }, 
+        {
+            "location": "/2.-Getting-started/#visual-codes", 
+            "text": "When the device boots in  normal  mode, it will start blinking:    Slowly when connecting to the Wi-Fi   Faster when connecting to the MQTT broker   This way, you can have a quick feedback on what's going on. If both connections are established, the LED will stay off. Note the device will also blink during the automatic reconnection, if the connection to the Wi-Fi or the MQTT broker is lost.", 
+            "title": "Visual codes"
+        }, 
+        {
+            "location": "/2.-Getting-started/#under-the-hood", 
+            "text": "Although the sketch looks like it does not do anything, it actually does quite a lot:   It automatically connects to the Wi-Fi and MQTT broker. No more network boilerplate code  It exposes the Homie device on MQTT (as devices /  device ID , e.g.  devices/c631f278 ).  It subscribes to the special device property  $ota , automatically rebooting in OTA mode if OTA is available  It checks for a button press on the ESP8266, to return to  configuration  mode", 
+            "title": "Under the hood"
+        }, 
+        {
+            "location": "/2.-Getting-started/#creating-an-useful-sketch", 
+            "text": "Now that we understand how Homie for ESP8266 works, let's create an useful sketch. We want to create a smart light.  #include   Homie.h  const   int   PIN_RELAY   =   5 ;  HomieNode   lightNode ( light ,   switch );  bool   lightOnHandler ( String   value )   { \n   if   ( value   ==   true )   { \n     digitalWrite ( PIN_RELAY ,   HIGH ); \n     Homie . setNodeProperty ( lightNode ,   on ,   true );   // Update the state of the light \n     Serial . println ( Light is on ); \n   }   else   if   ( value   ==   false )   { \n     digitalWrite ( PIN_RELAY ,   LOW ); \n     Homie . setNodeProperty ( lightNode ,   on ,   false ); \n     Serial . println ( Light is off ); \n   }   else   { \n     return   false ; \n   } \n\n   return   true ;  }  void   setup ()   { \n   pinMode ( PIN_RELAY ,   OUTPUT ); \n   digitalWrite ( PIN_RELAY ,   LOW ); \n\n   Homie . setFirmware ( awesome-relay ,   1.0.0 ); \n   lightNode . subscribe ( on ,   lightOnHandler ); \n   Homie . registerNode ( lightNode ); \n   Homie . setup ();  }  void   loop ()   { \n   Homie . loop ();  }   Alright, step by step:   We create a node with an ID of  light  and a type of  switch  with  HomieNode lightNode( light ,  switch )  We set the name and the version of the firmware with  Homie.setFirmware( awesome-light  , 1.0.0 );  We want our  light  node to subscribe to the  on  property. We do that with  lightNode.subscribe( on , lightOnHandler); . The  lightOnHandler  function will be called when the value of this property is changed  We tell Homie for ESP8266 to expose our  light  node by registering it. We do this with  Homie.registerNode(lightNode);  In the  lightOnHandler  function, we want to update the state of the  light  node. We do this with  Homie.setNodeProperty(lightNode,  on ,  true );   In about thirty SLOC, we have achieved to create a smart light, without any hard-coded credentials, with automatic reconnection in case of network failure, and with OTA support. Not bad, right?", 
+            "title": "Creating an useful sketch"
+        }, 
+        {
+            "location": "/2.-Getting-started/#creating-a-sensor-node", 
+            "text": "In the previous example sketch, we were reacting on property changes. But what if we want, for example, to send a temperature every 5 minute? We could do this in the Arduino  loop()  function. But then, we would have to check if we are in  normal  mode, and we would have to ensure the network connection is up before sending any property. Boring.  Fortunately, Homie for ESP8266 provides an easy way to do that.  #include   Homie.h  const   int   TEMPERATURE_INTERVAL   =   300 ;  unsigned   long   lastTemperatureSent   =   0 ;  HomieNode   temperatureNode ( temperature ,   temperature );  void   setupHandler ()   { \n   // Do what you want to prepare your sensor  }  void   loopHandler ()   { \n   if   ( millis ()   -   lastTemperatureSent   =   TEMPERATURE_INTERVAL   *   1000UL   ||   lastTemperatureSent   ==   0 )   { \n     float   temperature   =   22 ;   // Fake temperature here, for the example \n     Serial . print ( Temperature:  ); \n     Serial . print ( temperature ); \n     Serial . println (  \u00b0C ); \n     if   ( Homie . setNodeProperty ( temperatureNode ,   temperature ,   String ( temperature ),   true ))   { \n       lastTemperatureSent   =   millis (); \n     }   else   { \n       Serial . println ( Sending failed ); \n     } \n   }  }  void   setup ()   { \n   Homie . setFirmware ( awesome-temperature ,   1.0.0 ); \n   Homie . registerNode ( temperatureNode ); \n   Homie . setSetupFunction ( setupHandler ); \n   Homie . setLoopFunction ( loopHandler ); \n   Homie . setup ();  }  void   loop ()   { \n   Homie . loop ();  }   The only new things here are the  Homie.setSetupFunction(setupHandler);  and  Homie.setLoopFunction(loopHandler);  calls. The setup function will be called once, when the device is in  normal  mode and the network connection is up. The loop function will be called everytime, when the device is in  normal  mode and the network connection is up. This provides a nice level of abstraction.  Now that you understand the basic usage of Homie for ESP8266, you can head on to the  Advanced usage  page to learn about more powerful features like input handlers and the event system.", 
+            "title": "Creating a sensor node"
+        }, 
+        {
+            "location": "/3.-Advanced-usage/", 
+            "text": "Advanced usage\n\n\nBuilt-in LED\n\n\nBy default, Homie for ESP8266 will blink the built-in LED to indicate its status. However, on some boards like the ESP-01, the built-in LED is actually the TX port, so it is fine if Serial is not enabled, but if you enable Serial, this is a problem. You can easily disable the built-in LED blinking.\n\n\nvoid\n \nsetup\n()\n \n{\n\n  \nHomie\n.\nenableBuiltInLedIndicator\n(\nfalse\n);\n \n// before Homie.setup()\n\n  \n// ...\n\n\n}\n\n\n\n\n\nYou may, instead of completely disable the LED control, set a new LED to control:\n\n\nvoid\n \nsetup\n()\n \n{\n\n  \nHomie\n.\nsetLedPin\n(\n16\n,\n \nHIGH\n);\n \n// before Homie.setup() -- 2nd param is the state when the LED is on\n\n  \n// ...\n\n\n}\n\n\n\n\n\nChange the brand\n\n\nBy default, Homie for ESP8266 will spawn a \nHomie-XXXXXXXX\n AP, will connect to the MQTT broker with the \nHomie-XXXXXXXX\n client ID, etc. You might want to change the \nHomie\n text:\n\n\nvoid\n \nsetup\n()\n \n{\n\n  \nHomie\n.\nsetBrand\n(\nMyIoTSystem\n);\n \n// before Homie.setup()\n\n  \n// ...\n\n\n}\n\n\n\n\n\nHook to Homie events\n\n\nYou may want to hook to Homie events. Maybe you will want to blink a LED if the Wi-Fi connection is lost, or execute some code prior to a device reset to clear some EEPROM you're using.\n\n\nvoid\n \nonHomieEvent\n(\nHomieEvent\n \nevent\n)\n \n{\n\n  \nswitch\n(\nevent\n)\n \n{\n\n    \ncase\n \nHOMIE_CONFIGURATION_MODE\n:\n\n      \n// Do whatever you want when configuration mode is started\n\n      \nbreak\n;\n\n    \ncase\n \nHOMIE_NORMAL_MODE\n:\n\n      \n// Do whatever you want when normal mode is started\n\n      \nbreak\n;\n\n    \ncase\n \nHOMIE_OTA_MODE\n:\n\n      \n// Do whatever you want when OTA mode is started\n\n      \nbreak\n;\n\n    \ncase\n \nHOMIE_ABOUT_TO_RESET\n:\n\n      \n// Do whatever you want when the device is about to reset\n\n      \nbreak\n;\n\n    \ncase\n \nHOMIE_WIFI_CONNECTED\n:\n\n      \n// Do whatever you want when Wi-Fi is connected in normal mode\n\n      \nbreak\n;\n\n    \ncase\n \nHOMIE_WIFI_DISCONNECTED\n:\n\n      \n// Do whatever you want when Wi-Fi is disconnected in normal mode\n\n      \nbreak\n;\n\n    \ncase\n \nHOMIE_MQTT_CONNECTED\n:\n\n      \n// Do whatever you want when MQTT is connected in normal mode\n\n      \nbreak\n;\n\n    \ncase\n \nHOMIE_MQTT_DISCONNECTED\n:\n\n      \n// Do whatever you want when MQTT is disconnected in normal mode\n\n      \nbreak\n;\n\n  \n}\n\n\n}\n\n\n\nvoid\n \nsetup\n()\n \n{\n\n  \nHomie\n.\nonEvent\n(\nonHomieEvent\n);\n \n// before Homie.setup()\n\n  \n// ...\n\n\n}\n\n\n\n\n\nSee the \nHookToEvents\n example for a concrete use case.\n\n\nSerial / Logging\n\n\nBy default, Homie for ESP8266 will output a lot of useful debug messages on the Serial. You may want to disable this behavior if you want to use the Serial line for anything else.\n\n\nvoid\n \nsetup\n()\n \n{\n\n  \nHomie\n.\nenableLogging\n(\nfalse\n);\n \n// before Homie.setup()\n\n  \n// ...\n\n\n}\n\n\n\n\n\nIf logging is enabled \nSerial.begin();\n will be called internally at 115 200 baud in \nHomie.setup()\n. So don't initialize the Serial line yourself.\n\n\nInput handlers\n\n\nThere are three types of input handlers:\n\n\n\n\nGlobal input handler. This unique handler will handle every changed subscribed properties for all registered nodes\n\n\n\n\nbool\n \nglobalInputHandler\n(\nString\n \nnode\n,\n \nString\n \nproperty\n,\n \nString\n \nvalue\n)\n \n{\n\n\n\n}\n\n\n\nvoid\n \nsetup\n()\n \n{\n\n  \nHomie\n.\nsetGlobalInputHandler\n(\nglobalInputHandler\n);\n \n// before Homie.setup()\n\n  \n// ...\n\n\n}\n\n\n\n* Node input handlers. This handler will handle every changed subscribed properties of a specific node\n\n\nbool\n \nnodeInputHandler\n(\nString\n \nproperty\n,\n \nString\n \nvalue\n)\n \n{\n\n\n\n}\n\n\n\nHomieNode\n \nnode\n(\nid\n,\n \ntype\n,\n \nnodeInputHandler\n);\n\n\n\n* Property input handlers. This handler will handle changes for a specific property of a specific node\n\n\nbool\n \npropertyInputHandler\n(\nString\n \nvalue\n)\n \n{\n\n\n\n}\n\n\n\nHomieNode\n \nnode\n(\nid\n,\n \ntype\n);\n\n\n\nvoid\n \nsetup\n()\n \n{\n\n  \nnode\n.\nsubscribe\n(\nproperty\n,\n \npropertyInputHandler\n);\n \n// before Homie.setup()\n\n  \n// ...\n\n\n}\n\n\n\n\n\nYou can see that input handlers return a boolean. An input handler can decide whether or not it handled the message and want to propagate it down to other input handlers. If an input handler returns \ntrue\n, the propagation is stopped, if it returns \nfalse\n, the propagation continues. The order of the propagation is global handler \u2192 node handler \u2192 property handler.\n\n\nFor example, imagine you defined three input handlers: the global one, the node one, and the property one. If the global input handler returns \nfalse\n, the node input handler will be called. If the node input handler returns \ntrue\n, the propagation is stopped and the property input handler won't be called.\n\n\nHomieNode\n\n\nYou might want to create a node that subscribes to all properties. Just add a fourth parameter to the \nHomieNode\n constructor, set to \ntrue\n:\n\n\nbool\n \nnodeInputHandler\n(\nString\n \nproperty\n,\n \nString\n \nvalue\n)\n \n{\n\n\n\n}\n\n\n\nHomieNode\n \nnode\n(\nid\n,\n \ntype\n,\n \nnodeInputHandler\n,\n \ntrue\n);\n\n\n\n\n\nSee the \nLedStrip\n example for a concrete use case.\n\n\nReset\n\n\nResetting the device means erasing the stored configuration and rebooting from \nnormal\n mode to \nconfiguration\n mode. By default, you can do it by pressing 5 seconds the \nFLASH\n button of your ESP8266 board.\n\n\nThis behavior is configurable:\n\n\nvoid\n \nsetup\n()\n \n{\n\n  \nHomie\n.\nsetResetTrigger\n(\n1\n,\n \nLOW\n,\n \n2000\n);\n \n// before Homie.setup()\n\n  \n// ...\n\n\n}\n\n\n\n\n\nThe device will now reset if pin \n1\n is \nLOW\n for \n2000\nms. You can also disable completely this reset trigger:\n\n\nvoid\n \nsetup\n()\n \n{\n\n  \nHomie\n.\ndisableResetTrigger\n();\n \n// before Homie.setup()\n\n  \n// ...\n\n\n}\n\n\n\n\n\nIn addition, you can also provide your own function responsible for the device reset. This function will be looped:\n\n\nbool\n \nresetFunction\n \n()\n \n{\n\n  \nreturn\n \ntrue\n;\n \n// If true is returned, the device will reset, if false, it won\nt\n\n\n}\n\n\n\nvoid\n \nsetup\n()\n \n{\n\n  \nHomie\n.\nsetResetFunction\n(\nresetFunction\n);\n \n// before Homie.setup()\n\n  \n// ...\n\n\n}\n\n\n\n\n\nSometimes, you might want to disable temporarily the ability to reset the device. For example, if your device is doing some background work like moving shutters, you will want to disable the ability to reset until the shutters are not moving anymore.\n\n\nHomie\n.\nsetResettable\n(\nfalse\n);\n\n\n\n\n\nNote that if a reset is asked while \nresettable\n is set to false, the device will be flagged. In other words, when you will call \nHomie.setResettable(true);\n back, the device will immediately reset.\n\n\nKnow if device is in normal mode\n\n\nIf, for some reason, you want to run some code in the Arduino \nloop()\n function, it might be useful for you to know if the device is in \nnormal\n mode and if the network connection is up.\n\n\nvoid\n \nloop\n()\n \n{\n\n  \nif\n \n(\nHomie\n.\nisReadyToOperate\n())\n \n{\n\n    \n// normal mode and network connection up\n\n  \n}\n \nelse\n \n{\n\n    \n// not in normal mode or network connection down\n\n  \n}\n\n\n}", 
+            "title": "Advanced usage"
+        }, 
+        {
+            "location": "/3.-Advanced-usage/#advanced-usage", 
+            "text": "", 
+            "title": "Advanced usage"
+        }, 
+        {
+            "location": "/3.-Advanced-usage/#built-in-led", 
+            "text": "By default, Homie for ESP8266 will blink the built-in LED to indicate its status. However, on some boards like the ESP-01, the built-in LED is actually the TX port, so it is fine if Serial is not enabled, but if you enable Serial, this is a problem. You can easily disable the built-in LED blinking.  void   setup ()   { \n   Homie . enableBuiltInLedIndicator ( false );   // before Homie.setup() \n   // ...  }   You may, instead of completely disable the LED control, set a new LED to control:  void   setup ()   { \n   Homie . setLedPin ( 16 ,   HIGH );   // before Homie.setup() -- 2nd param is the state when the LED is on \n   // ...  }", 
+            "title": "Built-in LED"
+        }, 
+        {
+            "location": "/3.-Advanced-usage/#change-the-brand", 
+            "text": "By default, Homie for ESP8266 will spawn a  Homie-XXXXXXXX  AP, will connect to the MQTT broker with the  Homie-XXXXXXXX  client ID, etc. You might want to change the  Homie  text:  void   setup ()   { \n   Homie . setBrand ( MyIoTSystem );   // before Homie.setup() \n   // ...  }", 
+            "title": "Change the brand"
+        }, 
+        {
+            "location": "/3.-Advanced-usage/#hook-to-homie-events", 
+            "text": "You may want to hook to Homie events. Maybe you will want to blink a LED if the Wi-Fi connection is lost, or execute some code prior to a device reset to clear some EEPROM you're using.  void   onHomieEvent ( HomieEvent   event )   { \n   switch ( event )   { \n     case   HOMIE_CONFIGURATION_MODE : \n       // Do whatever you want when configuration mode is started \n       break ; \n     case   HOMIE_NORMAL_MODE : \n       // Do whatever you want when normal mode is started \n       break ; \n     case   HOMIE_OTA_MODE : \n       // Do whatever you want when OTA mode is started \n       break ; \n     case   HOMIE_ABOUT_TO_RESET : \n       // Do whatever you want when the device is about to reset \n       break ; \n     case   HOMIE_WIFI_CONNECTED : \n       // Do whatever you want when Wi-Fi is connected in normal mode \n       break ; \n     case   HOMIE_WIFI_DISCONNECTED : \n       // Do whatever you want when Wi-Fi is disconnected in normal mode \n       break ; \n     case   HOMIE_MQTT_CONNECTED : \n       // Do whatever you want when MQTT is connected in normal mode \n       break ; \n     case   HOMIE_MQTT_DISCONNECTED : \n       // Do whatever you want when MQTT is disconnected in normal mode \n       break ; \n   }  }  void   setup ()   { \n   Homie . onEvent ( onHomieEvent );   // before Homie.setup() \n   // ...  }   See the  HookToEvents  example for a concrete use case.", 
+            "title": "Hook to Homie events"
+        }, 
+        {
+            "location": "/3.-Advanced-usage/#serial-logging", 
+            "text": "By default, Homie for ESP8266 will output a lot of useful debug messages on the Serial. You may want to disable this behavior if you want to use the Serial line for anything else.  void   setup ()   { \n   Homie . enableLogging ( false );   // before Homie.setup() \n   // ...  }   If logging is enabled  Serial.begin();  will be called internally at 115 200 baud in  Homie.setup() . So don't initialize the Serial line yourself.", 
+            "title": "Serial / Logging"
+        }, 
+        {
+            "location": "/3.-Advanced-usage/#input-handlers", 
+            "text": "There are three types of input handlers:   Global input handler. This unique handler will handle every changed subscribed properties for all registered nodes   bool   globalInputHandler ( String   node ,   String   property ,   String   value )   {  }  void   setup ()   { \n   Homie . setGlobalInputHandler ( globalInputHandler );   // before Homie.setup() \n   // ...  }  \n* Node input handlers. This handler will handle every changed subscribed properties of a specific node  bool   nodeInputHandler ( String   property ,   String   value )   {  }  HomieNode   node ( id ,   type ,   nodeInputHandler );  \n* Property input handlers. This handler will handle changes for a specific property of a specific node  bool   propertyInputHandler ( String   value )   {  }  HomieNode   node ( id ,   type );  void   setup ()   { \n   node . subscribe ( property ,   propertyInputHandler );   // before Homie.setup() \n   // ...  }   You can see that input handlers return a boolean. An input handler can decide whether or not it handled the message and want to propagate it down to other input handlers. If an input handler returns  true , the propagation is stopped, if it returns  false , the propagation continues. The order of the propagation is global handler \u2192 node handler \u2192 property handler.  For example, imagine you defined three input handlers: the global one, the node one, and the property one. If the global input handler returns  false , the node input handler will be called. If the node input handler returns  true , the propagation is stopped and the property input handler won't be called.", 
+            "title": "Input handlers"
+        }, 
+        {
+            "location": "/3.-Advanced-usage/#homienode", 
+            "text": "You might want to create a node that subscribes to all properties. Just add a fourth parameter to the  HomieNode  constructor, set to  true :  bool   nodeInputHandler ( String   property ,   String   value )   {  }  HomieNode   node ( id ,   type ,   nodeInputHandler ,   true );   See the  LedStrip  example for a concrete use case.", 
+            "title": "HomieNode"
+        }, 
+        {
+            "location": "/3.-Advanced-usage/#reset", 
+            "text": "Resetting the device means erasing the stored configuration and rebooting from  normal  mode to  configuration  mode. By default, you can do it by pressing 5 seconds the  FLASH  button of your ESP8266 board.  This behavior is configurable:  void   setup ()   { \n   Homie . setResetTrigger ( 1 ,   LOW ,   2000 );   // before Homie.setup() \n   // ...  }   The device will now reset if pin  1  is  LOW  for  2000 ms. You can also disable completely this reset trigger:  void   setup ()   { \n   Homie . disableResetTrigger ();   // before Homie.setup() \n   // ...  }   In addition, you can also provide your own function responsible for the device reset. This function will be looped:  bool   resetFunction   ()   { \n   return   true ;   // If true is returned, the device will reset, if false, it won t  }  void   setup ()   { \n   Homie . setResetFunction ( resetFunction );   // before Homie.setup() \n   // ...  }   Sometimes, you might want to disable temporarily the ability to reset the device. For example, if your device is doing some background work like moving shutters, you will want to disable the ability to reset until the shutters are not moving anymore.  Homie . setResettable ( false );   Note that if a reset is asked while  resettable  is set to false, the device will be flagged. In other words, when you will call  Homie.setResettable(true);  back, the device will immediately reset.", 
+            "title": "Reset"
+        }, 
+        {
+            "location": "/3.-Advanced-usage/#know-if-device-is-in-normal-mode", 
+            "text": "If, for some reason, you want to run some code in the Arduino  loop()  function, it might be useful for you to know if the device is in  normal  mode and if the network connection is up.  void   loop ()   { \n   if   ( Homie . isReadyToOperate ())   { \n     // normal mode and network connection up \n   }   else   { \n     // not in normal mode or network connection down \n   }  }", 
+            "title": "Know if device is in normal mode"
+        }, 
+        {
+            "location": "/4.-OTA/", 
+            "text": "OTA\n\n\nHomie for ESP8266 supports OTA, if enabled in the configuration, and if a compatible OTA server is set up.\n\n\nIt works this way:\n\n\n\n\nThe device receives an OTA notification from the MQTT broker, as defined in the Homie convention. If the version sent by the broker is different from the one set with \nHomie.setFirmware()\n, and if OTA is enabled in the configuration, the device will be flagged to reboot to \nOTA\n mode as soon as the device will be resettable (with \nHomie.setResettable()\n).\n\n\nThe device boots in \nOTA\n mode\n\n\nThe device reaches the OTA server and attempt to flash the new firmware\n\n\nIf the OTA fails or succeed, the device reboots to \nnormal\n mode\n\n\n\n\nCreating a compatible OTA server\n\n\nIn \nOTA\n mode, the device sends a request to the host/path set in the configuration. This request contains the following headers:\n\n\n\n\nUser-Agent\n: \nESP8266-http-Update\n\n\nx-ESP8266-free-space\n: space available on the ESP8266 in bytes\n\n\nx-ESP8266-version\n: \nDevice ID\n=\nFirmware name\n=\nFirmware version\n=\nOTA version target\n (e.g. \nc631f278=awesome-light=1.0.0=1.1.0\n)\n\n\n\n\nYour server has to parse these headers. Based on the \nx-ESP8266-version\n header, it should decide what firmware it should send to the device. If no firmware is found, or if the firmware is bigger than the \nx-ESP8266-free-space\n header content, you can abort the OTA by sending a response with a \n304\n error code. To actually send the firmware, you must transfer the firmware file with a \n200\n code. For more bulletproof updates, you can also provide in the response the MD5 of your firmware file, in the \nx-MD5\n header.\n\n\nYou have an example PHP in the \nArduino for ESP8266 doc\n and a Node.js example in the \nhomie-server project\n.", 
+            "title": "OTA"
+        }, 
+        {
+            "location": "/4.-OTA/#ota", 
+            "text": "Homie for ESP8266 supports OTA, if enabled in the configuration, and if a compatible OTA server is set up.  It works this way:   The device receives an OTA notification from the MQTT broker, as defined in the Homie convention. If the version sent by the broker is different from the one set with  Homie.setFirmware() , and if OTA is enabled in the configuration, the device will be flagged to reboot to  OTA  mode as soon as the device will be resettable (with  Homie.setResettable() ).  The device boots in  OTA  mode  The device reaches the OTA server and attempt to flash the new firmware  If the OTA fails or succeed, the device reboots to  normal  mode", 
+            "title": "OTA"
+        }, 
+        {
+            "location": "/4.-OTA/#creating-a-compatible-ota-server", 
+            "text": "In  OTA  mode, the device sends a request to the host/path set in the configuration. This request contains the following headers:   User-Agent :  ESP8266-http-Update  x-ESP8266-free-space : space available on the ESP8266 in bytes  x-ESP8266-version :  Device ID = Firmware name = Firmware version = OTA version target  (e.g.  c631f278=awesome-light=1.0.0=1.1.0 )   Your server has to parse these headers. Based on the  x-ESP8266-version  header, it should decide what firmware it should send to the device. If no firmware is found, or if the firmware is bigger than the  x-ESP8266-free-space  header content, you can abort the OTA by sending a response with a  304  error code. To actually send the firmware, you must transfer the firmware file with a  200  code. For more bulletproof updates, you can also provide in the response the MD5 of your firmware file, in the  x-MD5  header.  You have an example PHP in the  Arduino for ESP8266 doc  and a Node.js example in the  homie-server project .", 
+            "title": "Creating a compatible OTA server"
+        }, 
+        {
+            "location": "/5.-JSON-configuration-file/", 
+            "text": "JSON configuration file\n\n\nTo configure your device, you have two choices: manually flashing the configuration file to the SPIFFS at the \n/homie/config.json\n (see \nUploading files to file system\n), so you can bypass the \nconfiguration\n mode, or send it through the \nConfiguration API\n.\n\n\nBelow is the format of the JSON configuration you will have to provide:\n\n\n{\n\n  \nname\n:\n \nThe kitchen light\n,\n\n  \ndevice_id\n:\n \nkitchen-light\n,\n\n  \nwifi\n:\n \n{\n\n    \nssid\n:\n \nNetwork_1\n,\n\n    \npassword\n:\n \nI\nm a Wi-Fi password!\n\n  \n},\n\n  \nmqtt\n:\n \n{\n\n    \nhost\n:\n \n192.168.1.10\n,\n\n    \nport\n:\n \n1883\n,\n\n    \nmdns\n:\n \nmqtt\n,\n\n    \nbase_topic\n:\n \ndevices/\n,\n\n    \nauth\n:\n \ntrue\n,\n\n    \nusername\n:\n \nuser\n,\n\n    \npassword\n:\n \npass\n,\n\n    \nssl\n:\n \ntrue\n,\n\n    \nfingerprint\n:\n \nCF 05 98 89 CA FF 8E D8 5E 5C E0 C2 E4 F7 E6 C3 C7 50 DD 5C\n\n  \n},\n\n  \nota\n:\n \n{\n\n    \nenabled\n:\n \ntrue\n,\n\n    \nhost\n:\n \n192.168.1.10\n,\n\n    \nport\n:\n \n80\n,\n\n    \nmdns\n:\n \nota\n,\n\n    \npath\n:\n \n/custom_ota\n,\n\n    \nssl\n:\n \ntrue\n,\n\n    \nfingerprint\n:\n \nCF 05 98 89 CA FF 8E D8 5E 5C E0 C2 E4 F7 E6 C3 C7 50 DD 5C\n\n  \n}\n\n\n}\n\n\n\n\n\nThe above JSON contains every field that can be customized.\n\n\nHere are the rules:\n\n\n\n\nname\n, \nwifi.ssid\n, \nwifi.password\n, \nmqtt.host\n (or \nmqtt.mdns\n) and \nota.enabled\n are mandatory\n\n\nwifi.password\n can be \n if connecting to an open network\n\n\nIf \nmqtt.auth\n is \ntrue\n, \nmqtt.username\n and \nmqtt.password\n must be provided\n\n\nIf a \nmdns\n field is set, the device will ignore the \nhost\n and \nport\n fields and query for the corresponding mDNS service and get the first IP and port found\n\n\n\n\nDefault values if not provided:\n\n\n\n\ndevice_id\n: the hardware device ID (eg. \n1a2b3c4d\n)\n\n\nmqtt.port\n: \n1883\n\n\nmqtt.base_topic\n: \ndevices/\n\n\nmqtt.auth\n: \nfalse\n\n\nmqtt.ssl\n: \nfalse\n\n\nota.host\n: same as \nmqtt.host\n\n\nota.port\n: \n80\n\n\nota.path\n: \n/ota\n\n\nota.ssl\n: \nfalse\n\n\n\n\nhost\n fields can be either an IP or an hostname.\n\n\nThe SSL fingerprints can be of the following format:\n\n\n\n\nCF 05 98 89 CA FF 8E D8 5E 5C E0 C2 E4 F7 E6 C3 C7 50 DD 5C\n\n\nCF\n:\n05\n:\n98\n:\n89\n:\nCA\n:\nFF\n:\n8\nE\n:\nD8\n:\n5\nE\n:\n5\nC\n:\nE0\n:\nC2\n:\nE4\n:\nF7\n:\nE6\n:\nC3\n:\nC7\n:\n50\n:\nDD\n:\n5\nC\n\n\ncf 05 98 89 ca ff 8e d8 5e 5c e0 c2 e4 f7 e6 c3 c7 50 dd 5c\n\n\ncf\n:\n05\n:\n98\n:\n89\n:\nca\n:\nff\n:\n8\ne\n:\nd8\n:\n5\ne\n:\n5\nc\n:\ne0\n:\nc2\n:\ne4\n:\nf7\n:\ne6\n:\nc3\n:\nc7\n:\n50\n:\ndd\n:\n5\nc", 
+            "title": "JSON configuration file"
+        }, 
+        {
+            "location": "/5.-JSON-configuration-file/#json-configuration-file", 
+            "text": "To configure your device, you have two choices: manually flashing the configuration file to the SPIFFS at the  /homie/config.json  (see  Uploading files to file system ), so you can bypass the  configuration  mode, or send it through the  Configuration API .  Below is the format of the JSON configuration you will have to provide:  { \n   name :   The kitchen light , \n   device_id :   kitchen-light , \n   wifi :   { \n     ssid :   Network_1 , \n     password :   I m a Wi-Fi password! \n   }, \n   mqtt :   { \n     host :   192.168.1.10 , \n     port :   1883 , \n     mdns :   mqtt , \n     base_topic :   devices/ , \n     auth :   true , \n     username :   user , \n     password :   pass , \n     ssl :   true , \n     fingerprint :   CF 05 98 89 CA FF 8E D8 5E 5C E0 C2 E4 F7 E6 C3 C7 50 DD 5C \n   }, \n   ota :   { \n     enabled :   true , \n     host :   192.168.1.10 , \n     port :   80 , \n     mdns :   ota , \n     path :   /custom_ota , \n     ssl :   true , \n     fingerprint :   CF 05 98 89 CA FF 8E D8 5E 5C E0 C2 E4 F7 E6 C3 C7 50 DD 5C \n   }  }   The above JSON contains every field that can be customized.  Here are the rules:   name ,  wifi.ssid ,  wifi.password ,  mqtt.host  (or  mqtt.mdns ) and  ota.enabled  are mandatory  wifi.password  can be   if connecting to an open network  If  mqtt.auth  is  true ,  mqtt.username  and  mqtt.password  must be provided  If a  mdns  field is set, the device will ignore the  host  and  port  fields and query for the corresponding mDNS service and get the first IP and port found   Default values if not provided:   device_id : the hardware device ID (eg.  1a2b3c4d )  mqtt.port :  1883  mqtt.base_topic :  devices/  mqtt.auth :  false  mqtt.ssl :  false  ota.host : same as  mqtt.host  ota.port :  80  ota.path :  /ota  ota.ssl :  false   host  fields can be either an IP or an hostname.  The SSL fingerprints can be of the following format:   CF 05 98 89 CA FF 8E D8 5E 5C E0 C2 E4 F7 E6 C3 C7 50 DD 5C  CF : 05 : 98 : 89 : CA : FF : 8 E : D8 : 5 E : 5 C : E0 : C2 : E4 : F7 : E6 : C3 : C7 : 50 : DD : 5 C  cf 05 98 89 ca ff 8e d8 5e 5c e0 c2 e4 f7 e6 c3 c7 50 dd 5c  cf : 05 : 98 : 89 : ca : ff : 8 e : d8 : 5 e : 5 c : e0 : c2 : e4 : f7 : e6 : c3 : c7 : 50 : dd : 5 c", 
+            "title": "JSON configuration file"
+        }, 
+        {
+            "location": "/6.-Configuration-API/", 
+            "text": "Configuration API\n\n\nWhen in \nconfiguration\n mode, the device exposes a JSON API to send the configuration to it. When you send a valid configuration to the \n/config\n endpoint, the configuration file is stored in the file system at \n/homie/config.json\n.\n\n\nIf you don't want to mess with JSON, you have a Web UI / app available:\n* At \nhttp://marvinroger.github.io/homie-esp8266\n\n* As an \nAndroid app\n\n\nQuick instructions to use the Web UI / app\n:\n\n\n\n\nOpen the Web UI / app\n\n\nDisconnect from your current Wi-Fi AP, and connect to the \nHomie-xxxxxxxx\n AP spawned in \nconfiguration\n mode\n\n\nFollow the instructions\n\n\n\n\nYou can see the sources of the Web UI \nhere\n and the built version \nhere\n\n\nAlternatively, you can use this curl command to send the config to the device:\n\n\ncurl -X PUT http://homie.config/config --header \nContent-Type: application/json\n -d @config.json\n\n\n\n\nThis will send the \n./config.json\n file to the device.\n\n\nError handling\n\n\nWhen everything went fine, a \n200 OK\n HTTP code is returned.\nIf anything goes wrong, a return code != 200 will be returned, with a JSON \nerror\n field indicating the error.\n\n\nAPI endpoints\n\n\nGET \n/heart\n\n\nThis is useful to ensure we are connected to the device AP.\n\n\nResponse\n\n\n200 OK (application/json)\n\n\n{\n \nheart\n:\n \nbeat\n \n}\n\n\n\n\n\nGET \n/device-info\n\n\nGet some information on the device.\n\n\nResponse\n\n\n200 OK (application/json)\n\n\n{\n\n  \ndevice_id\n:\n \n52a8fa5d\n,\n\n  \nhomie_version\n:\n \n1.0.0\n,\n\n  \nfirmware\n:\n \n{\n\n    \nname\n:\n \nawesome-device\n,\n\n    \nversion\n:\n \n1.0.0\n\n  \n},\n\n  \nnodes\n:\n \n[\n\n    \n{\n\n      \nid\n:\n \nlight\n,\n\n      \ntype\n:\n \nlight\n\n    \n}\n\n  \n]\n\n\n}\n\n\n\n\n\nGET \n/networks\n\n\nRetrieve the Wi-Fi networks the device can see.\n\n\nResponse\n\n\n\n\nIn case of success:\n\n\n\n\n200 OK (application/json)\n\n\n{\n\n  \nnetworks\n:\n \n[\n\n    \n{\n \nssid\n:\n \nNetwork_2\n,\n \nrssi\n:\n \n-82\n,\n \nencryption\n:\n \nwep\n \n},\n\n    \n{\n \nssid\n:\n \nNetwork_1\n,\n \nrssi\n:\n \n-57\n,\n \nencryption\n:\n \nwpa\n \n},\n\n    \n{\n \nssid\n:\n \nNetwork_3\n,\n \nrssi\n:\n \n-65\n,\n \nencryption\n:\n \nwpa2\n \n},\n\n    \n{\n \nssid\n:\n \nNetwork_5\n,\n \nrssi\n:\n \n-94\n,\n \nencryption\n:\n \nnone\n \n},\n\n    \n{\n \nssid\n:\n \nNetwork_4\n,\n \nrssi\n:\n \n-89\n,\n \nencryption\n:\n \nauto\n \n}\n\n  \n]\n\n\n}\n\n\n\n\n\n\n\nIn case the initial Wi-Fi scan is not finished on the device:\n\n\n\n\n503 Service Unavailable (application/json)\n\n\n{\nerror\n:\n \nInitial Wi-Fi scan not finished yet\n}\n\n\n\n\n\nPUT \n/config\n\n\nSave the config to the device.\n\n\nRequest body\n\n\n(application/json)\n\n\nSee \nJSON configuration file\n.\n\n\nResponse\n\n\n\n\nIn case of success:\n\n\n\n\n200 OK (application/json)\n\n\n{\n \nsuccess\n:\n \ntrue\n \n}\n\n\n\n\n\n\n\nIn case of error in the payload:\n\n\n\n\n400 Bad Request (application/json)\n\n\n{\n \nsuccess\n:\n \nfalse\n,\n \nerror\n:\n \nReason why the payload is invalid\n \n}\n\n\n\n\n\n\n\nIn case the device already received a valid configuration and is waiting for reboot:\n\n\n\n\n403 Forbidden (application/json)\n\n\n{\n \nsuccess\n:\n \nfalse\n,\n \nerror\n:\n \nDevice already configured\n \n}", 
+            "title": "Configuration API"
+        }, 
+        {
+            "location": "/6.-Configuration-API/#configuration-api", 
+            "text": "When in  configuration  mode, the device exposes a JSON API to send the configuration to it. When you send a valid configuration to the  /config  endpoint, the configuration file is stored in the file system at  /homie/config.json .  If you don't want to mess with JSON, you have a Web UI / app available:\n* At  http://marvinroger.github.io/homie-esp8266 \n* As an  Android app  Quick instructions to use the Web UI / app :   Open the Web UI / app  Disconnect from your current Wi-Fi AP, and connect to the  Homie-xxxxxxxx  AP spawned in  configuration  mode  Follow the instructions   You can see the sources of the Web UI  here  and the built version  here  Alternatively, you can use this curl command to send the config to the device:  curl -X PUT http://homie.config/config --header  Content-Type: application/json  -d @config.json  This will send the  ./config.json  file to the device.", 
+            "title": "Configuration API"
+        }, 
+        {
+            "location": "/6.-Configuration-API/#error-handling", 
+            "text": "When everything went fine, a  200 OK  HTTP code is returned.\nIf anything goes wrong, a return code != 200 will be returned, with a JSON  error  field indicating the error.", 
+            "title": "Error handling"
+        }, 
+        {
+            "location": "/6.-Configuration-API/#api-endpoints", 
+            "text": "", 
+            "title": "API endpoints"
+        }, 
+        {
+            "location": "/6.-Configuration-API/#get-heart", 
+            "text": "This is useful to ensure we are connected to the device AP.", 
+            "title": "GET /heart"
+        }, 
+        {
+            "location": "/6.-Configuration-API/#response", 
+            "text": "200 OK (application/json)  {   heart :   beat   }", 
+            "title": "Response"
+        }, 
+        {
+            "location": "/6.-Configuration-API/#get-device-info", 
+            "text": "Get some information on the device.", 
+            "title": "GET /device-info"
+        }, 
+        {
+            "location": "/6.-Configuration-API/#response_1", 
+            "text": "200 OK (application/json)  { \n   device_id :   52a8fa5d , \n   homie_version :   1.0.0 , \n   firmware :   { \n     name :   awesome-device , \n     version :   1.0.0 \n   }, \n   nodes :   [ \n     { \n       id :   light , \n       type :   light \n     } \n   ]  }", 
+            "title": "Response"
+        }, 
+        {
+            "location": "/6.-Configuration-API/#get-networks", 
+            "text": "Retrieve the Wi-Fi networks the device can see.", 
+            "title": "GET /networks"
+        }, 
+        {
+            "location": "/6.-Configuration-API/#response_2", 
+            "text": "In case of success:   200 OK (application/json)  { \n   networks :   [ \n     {   ssid :   Network_2 ,   rssi :   -82 ,   encryption :   wep   }, \n     {   ssid :   Network_1 ,   rssi :   -57 ,   encryption :   wpa   }, \n     {   ssid :   Network_3 ,   rssi :   -65 ,   encryption :   wpa2   }, \n     {   ssid :   Network_5 ,   rssi :   -94 ,   encryption :   none   }, \n     {   ssid :   Network_4 ,   rssi :   -89 ,   encryption :   auto   } \n   ]  }    In case the initial Wi-Fi scan is not finished on the device:   503 Service Unavailable (application/json)  { error :   Initial Wi-Fi scan not finished yet }", 
+            "title": "Response"
+        }, 
+        {
+            "location": "/6.-Configuration-API/#put-config", 
+            "text": "Save the config to the device.", 
+            "title": "PUT /config"
+        }, 
+        {
+            "location": "/6.-Configuration-API/#request-body", 
+            "text": "(application/json)  See  JSON configuration file .", 
+            "title": "Request body"
+        }, 
+        {
+            "location": "/6.-Configuration-API/#response_3", 
+            "text": "In case of success:   200 OK (application/json)  {   success :   true   }    In case of error in the payload:   400 Bad Request (application/json)  {   success :   false ,   error :   Reason why the payload is invalid   }    In case the device already received a valid configuration and is waiting for reboot:   403 Forbidden (application/json)  {   success :   false ,   error :   Device already configured   }", 
+            "title": "Response"
+        }, 
+        {
+            "location": "/7.-API-reference/", 
+            "text": "API reference\n\n\nHomie object\n\n\nYou don't have to instantiate an \nHomie\n instance, it is done internally.\n\n\nvoid Homie.setup ()\n\n\nSetup Homie. Must be called once in \nsetup()\n.\n\n\nvoid Homie.loop ()\n\n\nHandle Homie work. Must be called in \nloop()\n.\n\n\nvoid Homie.enableLogging (bool \nenable\n)\n\n\nEnable or disable Homie Serial logging.\nIf logging is enabled, \nSerial.begin(115200)\n will be called internally.\n\n\n\n\nenable\n: Whether or not to enable logging. By default, logging is enabled\n\n\n\n\nvoid Homie.enableBuiltInLedIndicator (bool \nenable\n)\n\n\nEnable or disable the built-in LED to indicate the Homie state.\n\n\n\n\nenable\n: Whether or not to enable built-in LED. By default, it is enabled\n\n\n\n\nvoid Homie.setLedPin (unsigned char \npin\n, unsigned char \non\n)\n\n\nSet pin of the LED to control.\n\n\n\n\npin\n: LED to control\n\n\non\n: state when the light is on (HIGH or LOW)\n\n\n\n\nvoid Homie.setBrand (const char* \nname\n)\n\n\nSet the brand of the device, used in the configuration AP, the device hostname and the MQTT client ID.\n\n\n\n\nname\n: Name of the brand. Default value is \nHomie\n\n\n\n\nvoid Homie.setFirmware (const char* \nname\n, const char* \nversion\n)\n\n\nSet the name and version of the firmware. This is useful for OTA, as Homie will check against the server if there is a newer version.\n\n\n\n\nname\n: Name of the firmware. Default value is \nundefined\n\n\nversion\n: Version of the firmware. Default value is \nundefined\n\n\n\n\nvoid Homie.registerNode (HomieNode \nnode\n)\n\n\nRegister a node.\n\n\n\n\nnode\n: node to register\n\n\n\n\nvoid Homie.setGlobalInputHandler (std::function\n \nhandler\n)\n\n\nSet input handler for subscribed properties.\n\n\n\n\nhandler\n: Global input handler\n\n\nnode\n: Name of the node getting updated\n\n\nproperty\n: Property of the node getting updated\n\n\nvalue\n: Value of the new property\n\n\n\n\nvoid Homie.onEvent (std::function\n \ncallback\n)\n\n\nSet the event handler. Useful if you want to hook to Homie events.\n\n\n\n\ncallback\n: Event handler\n\n\n\n\nvoid Homie.setResetTrigger (unsigned char \npin\n, unsigned char \nstate\n, unsigned int \ntime\n)\n\n\nSet the reset trigger. By default, the device will reset when pin \n0\n is \nLOW\n for \n5000\nms.\n\n\n\n\npin\n: Pin of the reset trigger\n\n\nstate\n: Reset when the pin reaches this state for the given time\n\n\ntime\n: Time necessary to reset\n\n\n\n\nvoid Homie.disableResetTrigger ()\n\n\nDisable the reset trigger.\n\n\nvoid Homie.setResetFunction (std::function\n \ncallback\n)\n\n\nSet the reset function. This is a function that is going to be called at each loop iteration, which can trigger a device reset. If the function returns true, the device resets. Else, it does not.\n\n\n\n\ncallback\n: Reset function\n\n\n\n\nvoid Homie.setSetupFunction (std::function\n \ncallback\n)\n\n\nYou can provide the function that will be called when operating in \nnormal\n mode.\n\n\n\n\ncallback\n: Setup function\n\n\n\n\nvoid Homie.setLoopFunction (std::function\n \ncallback\n)\n\n\nYou can provide the function that will be looped in normal mode.\n\n\n\n\ncallback\n: Loop function\n\n\n\n\nvoid Homie.setNodeProperty (HomieNode \nnode\n, String \nproperty\n, String \nvalue\n, bool \nretained\n = true)\n\n\nUsing this function, you can set the value of a node property, like a temperature for example.\n\n\n\n\nnode\n: HomieNode instance on which to set the property on\n\n\nproperty\n: Property to send\n\n\nvalue\n: Payload\n\n\nretained\n: Optional. Should the MQTT broker retain this value, or is it a one-shot value?\n\n\n\n\nvoid Homie.setResettable (bool \nresettable\n)\n\n\nIs the device resettable? This is useful at runtime, because you might want the device not to be resettable when you have another library that is doing some unfinished work, like moving shutters for example.\n\n\n\n\nresettable\n: Is the device resettable? Default value is \ntrue\n\n\n\n\nbool Homie.isReadyToOperate ()\n\n\nIs the device in normal mode, configured and connected? You should not need this function. But maybe you will.\n\n\n\n\nHomieNode object\n\n\nvoid HomieNode (const char* \nid\n, const char* \ntype\n, std::function\n \nhandler\n = , bool \nsubscribeToAll\n = false)\n\n\nConstructor of a HomieNode object.\n\n\n\n\nid\n: ID of the node\n\n\ntype\n: Type of the node\n\n\nhandler\n: Optional. Input handler of the node\n\n\nsubscribeToAll\n: Optional. Whether or not to call the handler for every properties, even the ones not registered\n\n\n\n\nvoid .subscribe (const char* \nproperty\n, std::function\n \nhandler\n) = )\n\n\nSubscribes the node to the given property.\n\n\n\n\nproperty\n: Property to subscribe to\n\n\nhandler\n: Optional. Input handler of the property of the node", 
+            "title": "API reference"
+        }, 
+        {
+            "location": "/7.-API-reference/#api-reference", 
+            "text": "", 
+            "title": "API reference"
+        }, 
+        {
+            "location": "/7.-API-reference/#homie-object", 
+            "text": "You don't have to instantiate an  Homie  instance, it is done internally.", 
+            "title": "Homie object"
+        }, 
+        {
+            "location": "/7.-API-reference/#void-homiesetup", 
+            "text": "Setup Homie. Must be called once in  setup() .", 
+            "title": "void Homie.setup ()"
+        }, 
+        {
+            "location": "/7.-API-reference/#void-homieloop", 
+            "text": "Handle Homie work. Must be called in  loop() .", 
+            "title": "void Homie.loop ()"
+        }, 
+        {
+            "location": "/7.-API-reference/#void-homieenablelogging-bool-enable", 
+            "text": "Enable or disable Homie Serial logging.\nIf logging is enabled,  Serial.begin(115200)  will be called internally.   enable : Whether or not to enable logging. By default, logging is enabled", 
+            "title": "void Homie.enableLogging (bool enable)"
+        }, 
+        {
+            "location": "/7.-API-reference/#void-homieenablebuiltinledindicator-bool-enable", 
+            "text": "Enable or disable the built-in LED to indicate the Homie state.   enable : Whether or not to enable built-in LED. By default, it is enabled", 
+            "title": "void Homie.enableBuiltInLedIndicator (bool enable)"
+        }, 
+        {
+            "location": "/7.-API-reference/#void-homiesetledpin-unsigned-char-pin-unsigned-char-on", 
+            "text": "Set pin of the LED to control.   pin : LED to control  on : state when the light is on (HIGH or LOW)", 
+            "title": "void Homie.setLedPin (unsigned char pin, unsigned char on)"
+        }, 
+        {
+            "location": "/7.-API-reference/#void-homiesetbrand-const-char42-name", 
+            "text": "Set the brand of the device, used in the configuration AP, the device hostname and the MQTT client ID.   name : Name of the brand. Default value is  Homie", 
+            "title": "void Homie.setBrand (const char* name)"
+        }, 
+        {
+            "location": "/7.-API-reference/#void-homiesetfirmware-const-char42-name-const-char42-version", 
+            "text": "Set the name and version of the firmware. This is useful for OTA, as Homie will check against the server if there is a newer version.   name : Name of the firmware. Default value is  undefined  version : Version of the firmware. Default value is  undefined", 
+            "title": "void Homie.setFirmware (const char* name, const char* version)"
+        }, 
+        {
+            "location": "/7.-API-reference/#void-homieregisternode-homienode-node", 
+            "text": "Register a node.   node : node to register", 
+            "title": "void Homie.registerNode (HomieNode node)"
+        }, 
+        {
+            "location": "/7.-API-reference/#void-homiesetglobalinputhandler-stdfunction-handler", 
+            "text": "Set input handler for subscribed properties.   handler : Global input handler  node : Name of the node getting updated  property : Property of the node getting updated  value : Value of the new property", 
+            "title": "void Homie.setGlobalInputHandler (std::function handler)"
+        }, 
+        {
+            "location": "/7.-API-reference/#void-homieonevent-stdfunction-callback", 
+            "text": "Set the event handler. Useful if you want to hook to Homie events.   callback : Event handler", 
+            "title": "void Homie.onEvent (std::function callback)"
+        }, 
+        {
+            "location": "/7.-API-reference/#void-homiesetresettrigger-unsigned-char-pin-unsigned-char-state-unsigned-int-time", 
+            "text": "Set the reset trigger. By default, the device will reset when pin  0  is  LOW  for  5000 ms.   pin : Pin of the reset trigger  state : Reset when the pin reaches this state for the given time  time : Time necessary to reset", 
+            "title": "void Homie.setResetTrigger (unsigned char pin, unsigned char state, unsigned int time)"
+        }, 
+        {
+            "location": "/7.-API-reference/#void-homiedisableresettrigger", 
+            "text": "Disable the reset trigger.", 
+            "title": "void Homie.disableResetTrigger ()"
+        }, 
+        {
+            "location": "/7.-API-reference/#void-homiesetresetfunction-stdfunction-callback", 
+            "text": "Set the reset function. This is a function that is going to be called at each loop iteration, which can trigger a device reset. If the function returns true, the device resets. Else, it does not.   callback : Reset function", 
+            "title": "void Homie.setResetFunction (std::function callback)"
+        }, 
+        {
+            "location": "/7.-API-reference/#void-homiesetsetupfunction-stdfunction-callback", 
+            "text": "You can provide the function that will be called when operating in  normal  mode.   callback : Setup function", 
+            "title": "void Homie.setSetupFunction (std::function callback)"
+        }, 
+        {
+            "location": "/7.-API-reference/#void-homiesetloopfunction-stdfunction-callback", 
+            "text": "You can provide the function that will be looped in normal mode.   callback : Loop function", 
+            "title": "void Homie.setLoopFunction (std::function callback)"
+        }, 
+        {
+            "location": "/7.-API-reference/#void-homiesetnodeproperty-homienode-node-string-property-string-value-bool-retained-true", 
+            "text": "Using this function, you can set the value of a node property, like a temperature for example.   node : HomieNode instance on which to set the property on  property : Property to send  value : Payload  retained : Optional. Should the MQTT broker retain this value, or is it a one-shot value?", 
+            "title": "void Homie.setNodeProperty (HomieNode node, String property, String value, bool retained = true)"
+        }, 
+        {
+            "location": "/7.-API-reference/#void-homiesetresettable-bool-resettable", 
+            "text": "Is the device resettable? This is useful at runtime, because you might want the device not to be resettable when you have another library that is doing some unfinished work, like moving shutters for example.   resettable : Is the device resettable? Default value is  true", 
+            "title": "void Homie.setResettable (bool resettable)"
+        }, 
+        {
+            "location": "/7.-API-reference/#bool-homieisreadytooperate", 
+            "text": "Is the device in normal mode, configured and connected? You should not need this function. But maybe you will.", 
+            "title": "bool Homie.isReadyToOperate ()"
+        }, 
+        {
+            "location": "/7.-API-reference/#homienode-object", 
+            "text": "", 
+            "title": "HomieNode object"
+        }, 
+        {
+            "location": "/7.-API-reference/#void-homienode-const-char42-id-const-char42-type-stdfunction-handler-bool-subscribetoall-false", 
+            "text": "Constructor of a HomieNode object.   id : ID of the node  type : Type of the node  handler : Optional. Input handler of the node  subscribeToAll : Optional. Whether or not to call the handler for every properties, even the ones not registered", 
+            "title": "void HomieNode (const char* id, const char* type, std::function handler = , bool subscribeToAll = false)"
+        }, 
+        {
+            "location": "/7.-API-reference/#void-subscribe-const-char42-property-stdfunction-handler", 
+            "text": "Subscribes the node to the given property.   property : Property to subscribe to  handler : Optional. Input handler of the property of the node", 
+            "title": "void .subscribe (const char* property, std::function handler) = )"
+        }, 
+        {
+            "location": "/8.-Limitations-and-known-issues/", 
+            "text": "Limitations and known issues\n\n\nBlocking Homie code\n\n\nIn \nconfiguration\n and \nnormal\n modes, Homie for ESP8266 code is designed to be non-blocking, so that you can do other tasks in the main \nloop()\n. However, the connection to the MQTT broker is blocking during ~5 seconds in case the server is unreachable. This is an Arduino for ESP8266 limitation, and we can't do anything on our side to solve this issue, not even a timeout.\n\n\nThe \nOTA\n mode is blocking for obvious reason.\n\n\nSSL fingerprint checking\n\n\nAdding a TLS fingerprint effectively pins the device to a particular certificate. Furthermore, as currently implemented by the ESP8266 \nWifiSecureClient\n, both \nmqtt.host\n and \nota.host\n are verified against the server certificate's common name (CN) in the certificate subject or in the SANs (subjectAlternateName) contained in it, but not in their IP addresses. For example, if the certificate used by your server looks like this:\n\n\nSubject\n:\n \nCN\n=\ntiggr\n.\nexample\n.\norg\n,\n \nOU\n=\ngenerate\n-\nCA\n/\nemailAddress\n=\nnobody\n@\nexample\n.\nnet\n\n\n...\n\n\nX509v3\n \nSubject\n \nAlternative\n \nName\n:\n\n  \nIP\n \nAddress\n:\n192.168\n.\n1.10\n,\n \nDNS\n:\nbroker\n.\nexample\n.\norg\n\n\n\n\n\nEnabling fingerprint in Homie will work only if host is set to \ntiggr.example.org\n or \nbroker.example.org\n and the correct fingerprint is used; setting host to the IP address will cause fingerprint verification to fail.\n\n\nADC readings\n\n\nThis is a known esp8266/Arduino issue\n that polling \nanalogRead()\n too frequently forces the Wi-Fi to disconnect. As a workaround, don't poll the ADC more than one time every 3ms.", 
+            "title": "Limitations and known issues"
+        }, 
+        {
+            "location": "/8.-Limitations-and-known-issues/#limitations-and-known-issues", 
+            "text": "", 
+            "title": "Limitations and known issues"
+        }, 
+        {
+            "location": "/8.-Limitations-and-known-issues/#blocking-homie-code", 
+            "text": "In  configuration  and  normal  modes, Homie for ESP8266 code is designed to be non-blocking, so that you can do other tasks in the main  loop() . However, the connection to the MQTT broker is blocking during ~5 seconds in case the server is unreachable. This is an Arduino for ESP8266 limitation, and we can't do anything on our side to solve this issue, not even a timeout.  The  OTA  mode is blocking for obvious reason.", 
+            "title": "Blocking Homie code"
+        }, 
+        {
+            "location": "/8.-Limitations-and-known-issues/#ssl-fingerprint-checking", 
+            "text": "Adding a TLS fingerprint effectively pins the device to a particular certificate. Furthermore, as currently implemented by the ESP8266  WifiSecureClient , both  mqtt.host  and  ota.host  are verified against the server certificate's common name (CN) in the certificate subject or in the SANs (subjectAlternateName) contained in it, but not in their IP addresses. For example, if the certificate used by your server looks like this:  Subject :   CN = tiggr . example . org ,   OU = generate - CA / emailAddress = nobody @ example . net  ...  X509v3   Subject   Alternative   Name : \n   IP   Address : 192.168 . 1.10 ,   DNS : broker . example . org   Enabling fingerprint in Homie will work only if host is set to  tiggr.example.org  or  broker.example.org  and the correct fingerprint is used; setting host to the IP address will cause fingerprint verification to fail.", 
+            "title": "SSL fingerprint checking"
+        }, 
+        {
+            "location": "/8.-Limitations-and-known-issues/#adc-readings", 
+            "text": "This is a known esp8266/Arduino issue  that polling  analogRead()  too frequently forces the Wi-Fi to disconnect. As a workaround, don't poll the ADC more than one time every 3ms.", 
+            "title": "ADC readings"
+        }, 
+        {
+            "location": "/9.-Troubleshooting/", 
+            "text": "Troubleshooting\n\n\n1. I see some garbage on the Serial monitor?\n\n\nYou are probably using a generic ESP8266. The problem with these modules is the built-in LED is tied to the serial line. You can do two things:\n\n\n\n\nDisable the serial logging, to have the LED working:\n\n\n\n\nvoid\n \nsetup\n()\n \n{\n\n  \nHomie\n.\nenableLogging\n(\nfalse\n);\n \n// before Homie.setup()\n\n  \n// ...\n\n\n}\n\n\n\n* Disable the the LED blinking, to have the serial line working:\n\n\nvoid\n \nsetup\n()\n \n{\n\n  \nHomie\n.\nenableBuiltInLedIndicator\n(\nfalse\n);\n \n// before Homie.setup()\n\n  \n// ...\n\n\n}\n\n\n\n\n\n2. I see an \nabort\n message on the Serial monitor?\n\n\nabort()\n is called by Homie for ESP8266 when the framework is used in a bad way. The possible causes are:\n\n\n\n\n\n\nYou are calling a function that is meant to be called before \nHomie.setup()\n, after \nHomie.setup()\n\n\n\n\n\n\nOne of the string you've used (in \nsetFirmware()\n, \nsubscribe()\n, etc.) is too long. Check the \nLimits.hpp\n file to see the max length possible for each string.\n\n\n\n\n\n\n3. The network is completely unstable... What's going on?\n\n\nThe framework needs to work continuously (ie. \nHomie.loop()\n needs to be called very frequently). In other words, don't use \ndelay()\n (see \navoid delay\n) or anything that might block the code for more than 50ms or so. There is also a known Arduino for ESP8266 issue with \nanalogRead()\n, see \nLimitations and known issues#adc-readings\n.\n\n\n4. My device resets itself without me doing anything?\n\n\nYou have probably connected a sensor to the default reset pin of the framework (D3 on NodeMCU, GPIO0 on other boards). See \nAdvanced usage#reset\n.", 
+            "title": "Troubleshooting"
+        }, 
+        {
+            "location": "/9.-Troubleshooting/#troubleshooting", 
+            "text": "", 
+            "title": "Troubleshooting"
+        }, 
+        {
+            "location": "/9.-Troubleshooting/#1-i-see-some-garbage-on-the-serial-monitor", 
+            "text": "You are probably using a generic ESP8266. The problem with these modules is the built-in LED is tied to the serial line. You can do two things:   Disable the serial logging, to have the LED working:   void   setup ()   { \n   Homie . enableLogging ( false );   // before Homie.setup() \n   // ...  }  \n* Disable the the LED blinking, to have the serial line working:  void   setup ()   { \n   Homie . enableBuiltInLedIndicator ( false );   // before Homie.setup() \n   // ...  }", 
+            "title": "1. I see some garbage on the Serial monitor?"
+        }, 
+        {
+            "location": "/9.-Troubleshooting/#2-i-see-an-abort-message-on-the-serial-monitor", 
+            "text": "abort()  is called by Homie for ESP8266 when the framework is used in a bad way. The possible causes are:    You are calling a function that is meant to be called before  Homie.setup() , after  Homie.setup()    One of the string you've used (in  setFirmware() ,  subscribe() , etc.) is too long. Check the  Limits.hpp  file to see the max length possible for each string.", 
+            "title": "2. I see an abort message on the Serial monitor?"
+        }, 
+        {
+            "location": "/9.-Troubleshooting/#3-the-network-is-completely-unstable-whats-going-on", 
+            "text": "The framework needs to work continuously (ie.  Homie.loop()  needs to be called very frequently). In other words, don't use  delay()  (see  avoid delay ) or anything that might block the code for more than 50ms or so. There is also a known Arduino for ESP8266 issue with  analogRead() , see  Limitations and known issues#adc-readings .", 
+            "title": "3. The network is completely unstable... What's going on?"
+        }, 
+        {
+            "location": "/9.-Troubleshooting/#4-my-device-resets-itself-without-me-doing-anything", 
+            "text": "You have probably connected a sensor to the default reset pin of the framework (D3 on NodeMCU, GPIO0 on other boards). See  Advanced usage#reset .", 
+            "title": "4. My device resets itself without me doing anything?"
+        }, 
+        {
+            "location": "/README/", 
+            "text": "Homie for ESP8266 documentation\n\n\nSee \nindex.md\n to view it locally, or \nhttp://marvinroger.viewdocs.io/homie-esp8266/\n to view it online.", 
+            "title": "README"
+        }, 
+        {
+            "location": "/README/#homie-for-esp8266-documentation", 
+            "text": "See  index.md  to view it locally, or  http://marvinroger.viewdocs.io/homie-esp8266/  to view it online.", 
+            "title": "Homie for ESP8266 documentation"
+        }
+    ]
+}
