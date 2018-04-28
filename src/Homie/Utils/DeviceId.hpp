@@ -16,10 +16,6 @@
 namespace HomieInternals {
 class DeviceId {
  public:
-  static void generate();
   static const char* get();
-
- private:
-  static char _deviceId[MAX_MAC_STRING_LENGTH];
 };
 }  // namespace HomieInternals

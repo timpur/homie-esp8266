@@ -34,7 +34,6 @@ HomieClass::HomieClass()
   Interface::get()._logger = &_logger;
   Interface::get()._config = &_config;
 
-  DeviceId::generate();
 }
 
 HomieClass::~HomieClass() {
