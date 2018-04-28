@@ -213,19 +213,21 @@ void BootConfig::_generateNetworksJson() {
     jsonNetwork["rssi"] = WiFi.RSSI(network);
     jsonNetwork["signal"] = Helpers::rssiToPercentage(WiFi.RSSI(network));
     switch (WiFi.encryptionType(network)) {
-      case ENC_TYPE_WEP:
-        jsonNetwork["encryption"] = "wep";
-        break;
-      case ENC_TYPE_TKIP:
-        jsonNetwork["encryption"] = "wpa";
-        break;
-      case ENC_TYPE_CCMP:
-        jsonNetwork["encryption"] = "wpa2";
-        break;
-      case ENC_TYPE_NONE:
+       case WIFI_AUTH_OPEN:
         jsonNetwork["encryption"] = "none";
         break;
-      case ENC_TYPE_AUTO:
+      case WIFI_AUTH_WEP:
+        jsonNetwork["encryption"] = "wep";
+        break;
+      case WIFI_AUTH_WPA_PSK:
+        jsonNetwork["encryption"] = "wpa";
+        break;
+      case WIFI_AUTH_WPA2_PSK:
+        jsonNetwork["encryption"] = "wpa2";
+        break;
+      case WIFI_AUTH_WPA_WPA2_PSK:
+        jsonNetwork["encryption"] = "wpa_wpa2";
+      case WIFI_AUTH_MAX:
         jsonNetwork["encryption"] = "auto";
         break;
     }

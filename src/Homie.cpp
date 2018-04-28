@@ -356,10 +356,10 @@ void HomieClass::prepareToSleep() {
   }
 }
 
-void HomieClass::doDeepSleep(uint32_t time_us, RFMode mode) {
+void HomieClass::doDeepSleep(uint32_t time_us) {
   Interface::get().getLogger() << F("💤 Device is deep sleeping...") << endl;
   Serial.flush();
-  ESP.deepSleep(time_us, mode);
+  ESP.deepSleep(time_us);
 }
 
 HomieBootMode HomieClass::getHomieBootMode() {

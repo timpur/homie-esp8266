@@ -4,6 +4,8 @@
 #include <ArduinoJson.h>
 #define FS_NO_GLOBALS
 #include "FS.h"
+#include "SPIFFS.h"
+
 
 #include "./Datatypes/Interface.hpp"
 #include "./Datatypes/ConfigStruct.hpp"

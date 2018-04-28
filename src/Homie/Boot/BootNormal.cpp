@@ -2,6 +2,7 @@
 
 using namespace HomieInternals;
 
+
 BootNormal::BootNormal()
   : Boot("normal")
   , _mqttReconnectTimer(MQTT_RECONNECT_INITIAL_INTERVAL, MQTT_RECONNECT_MAX_BACKOFF)
@@ -20,7 +21,7 @@ BootNormal::BootNormal()
   , _mqttPayloadBuffer(nullptr)
   , _mqttTopicLevels(nullptr)
   , _mqttTopicLevelsCount(0) {
-  strlcpy(_fwChecksum, ESP.getSketchMD5().c_str(), sizeof(_fwChecksum));
+  //strlcpy(_fwChecksum, ESP.getSketchMD5().c_str(), sizeof(_fwChecksum));
   _fwChecksum[sizeof(_fwChecksum) - 1] = '\0';
 }
 
@@ -30,7 +31,7 @@ BootNormal::~BootNormal() {
 void BootNormal::setup() {
   Boot::setup();
 
-  Update.runAsync(true);
+  //Update.runAsync(true);
 
   _statsTimer.setInterval(Interface::get().getConfig().get().deviceStatsInterval * 1000);
 
@@ -52,8 +53,12 @@ void BootNormal::setup() {
   }
   _mqttTopic = std::unique_ptr<char[]>(new char[baseTopicLength + longestSubtopicLength]);
 
-  _wifiGotIpHandler = WiFi.onStationModeGotIP(std::bind(&BootNormal::_onWifiGotIp, this, std::placeholders::_1));
-  _wifiDisconnectedHandler = WiFi.onStationModeDisconnected(std::bind(&BootNormal::_onWifiDisconnected, this, std::placeholders::_1));
+  WiFi.onEvent([this](system_event_id_t event, system_event_info_t info){
+    Interface::get().getLogger() << "WiFi Event: " << event << endl;
+  });
+
+  WiFi.onEvent(std::bind(&BootNormal::_onWifiGotIp, this, std::placeholders::_1, std::placeholders::_2), system_event_id_t::SYSTEM_EVENT_STA_GOT_IP);
+  WiFi.onEvent(std::bind(&BootNormal::_onWifiDisconnected, this, std::placeholders::_1, std::placeholders::_2), system_event_id_t::SYSTEM_EVENT_STA_DISCONNECTED);
 
   Interface::get().getMqttClient().onConnect(std::bind(&BootNormal::_onMqttConnected, this));
   Interface::get().getMqttClient().onDisconnect(std::bind(&BootNormal::_onMqttDisconnected, this, std::placeholders::_1));
@@ -212,7 +217,7 @@ void BootNormal::_endOtaUpdate(bool success, uint8_t update_error) {
     switch (update_error) {
       case UPDATE_ERROR_SIZE:               // new firmware size is zero
       case UPDATE_ERROR_MAGIC_BYTE:         // new firmware does not have 0xE9 in first byte
-      case UPDATE_ERROR_NEW_FLASH_CONFIG:   // bad new flash config (does not match flash ID)
+      case UPDATE_ERROR_NO_PARTITION:   // bad new flash config (does not match flash ID)
         code = 400;  // 400 Bad Request
         info.concat(F("BAD_FIRMWARE"));
         break;
@@ -254,7 +259,7 @@ void BootNormal::_wifiConnect() {
 
     if (WiFi.getMode() != WIFI_STA) WiFi.mode(WIFI_STA);
 
-    WiFi.hostname(Interface::get().getConfig().get().deviceId);
+    WiFi.setHostname(Interface::get().getConfig().get().deviceId);
     if (strcmp_P(Interface::get().getConfig().get().wifi.ip, PSTR("")) != 0) {  // on _validateConfigWifi there is a requirement for mask and gateway
       IPAddress convertedIp;
       convertedIp.fromString(Interface::get().getConfig().get().wifi.ip);
@@ -291,28 +296,28 @@ void BootNormal::_wifiConnect() {
   }
 }
 
-void BootNormal::_onWifiGotIp(const WiFiEventStationModeGotIP& event) {
+void BootNormal::_onWifiGotIp(system_event_id_t event, system_event_info_t info) {
   if (Interface::get().led.enabled) Interface::get().getBlinker().stop();
-  Interface::get().getLogger() << F("✔ Wi-Fi connected, IP: ") << event.ip << endl;
+  Interface::get().getLogger() << F("✔ Wi-Fi connected, IP: ") << IPAddress(info.got_ip.ip_info.ip.addr) << endl;
   Interface::get().getLogger() << F("Triggering WIFI_CONNECTED event...") << endl;
   Interface::get().event.type = HomieEventType::WIFI_CONNECTED;
-  Interface::get().event.ip = event.ip;
-  Interface::get().event.mask = event.mask;
-  Interface::get().event.gateway = event.gw;
+  Interface::get().event.ip = IPAddress(info.got_ip.ip_info.ip.addr);
+  Interface::get().event.mask = IPAddress(info.got_ip.ip_info.netmask.addr);
+  Interface::get().event.gateway = IPAddress(info.got_ip.ip_info.gw.addr);
   Interface::get().eventHandler(Interface::get().event);
   MDNS.begin(Interface::get().getConfig().get().deviceId);
 
   _mqttConnect();
 }
 
-void BootNormal::_onWifiDisconnected(const WiFiEventStationModeDisconnected& event) {
+void BootNormal::_onWifiDisconnected(system_event_id_t event, system_event_info_t info) {
   Interface::get().ready = false;
   if (Interface::get().led.enabled) Interface::get().getBlinker().start(LED_WIFI_DELAY);
   _statsTimer.reset();
   Interface::get().getLogger() << F("✖ Wi-Fi disconnected") << endl;
   Interface::get().getLogger() << F("Triggering WIFI_DISCONNECTED event...") << endl;
   Interface::get().event.type = HomieEventType::WIFI_DISCONNECTED;
-  Interface::get().event.wifiReason = event.reason;
+  Interface::get().event.wifiReason = info.disconnected;
   Interface::get().eventHandler(Interface::get().event);
 
   _wifiConnect();
@@ -381,7 +386,7 @@ void BootNormal::_advertise() {
       if (packetId != 0) _advertisementProgress.globalStep = AdvertisementProgress::GlobalStep::PUB_IMPLEMENTATION;
       break;
     case AdvertisementProgress::GlobalStep::PUB_IMPLEMENTATION:
-      packetId = Interface::get().getMqttClient().publish(_prefixMqttTopic(PSTR("/$implementation")), 1, true, "esp8266");
+      packetId = Interface::get().getMqttClient().publish(_prefixMqttTopic(PSTR("/$implementation")), 1, true, "esp32");
       if (packetId != 0) _advertisementProgress.globalStep = AdvertisementProgress::GlobalStep::PUB_IMPLEMENTATION_CONFIG;
       break;
     case AdvertisementProgress::GlobalStep::PUB_IMPLEMENTATION_CONFIG:

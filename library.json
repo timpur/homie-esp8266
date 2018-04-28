@@ -16,7 +16,7 @@
     "branch": "master"
   },
   "frameworks": "arduino",
-  "platforms": "espressif8266",
+  "platforms": ["espressif8266", "espressif32"],
   "dependencies": [
     {
       "name": "ArduinoJson",
@@ -46,5 +46,5 @@
     "flags":[
       "-D HOMIE_FIRMWARE_HOMIE_BUTTON=1"
     ]
-  }  
+  }
 }

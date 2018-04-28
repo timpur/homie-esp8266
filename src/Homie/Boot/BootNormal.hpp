@@ -4,8 +4,18 @@
 
 #include <functional>
 #include <libb64/cdecode.h>
+
+#ifdef ESP32
+#include <WiFi.h>
+#include <ESPmDNS.h>
+#include <Update.h>
+#elif defined(ESP8266)
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
+#else
+#error Platform not supported
+#endif
+
 #include <AsyncMqttClient.h>
 
 #include "../../HomieFirmwareConfig.hpp"
@@ -25,18 +35,22 @@
 #include "../Utils/HomieButton.hpp"
 #endif
 
-namespace HomieInternals {
-class BootNormal : public Boot {
- public:
+namespace HomieInternals
+{
+class BootNormal : public Boot
+{
+public:
   BootNormal();
   ~BootNormal();
   void setup();
   void loop();
 
- private:
-  struct AdvertisementProgress {
+private:
+  struct AdvertisementProgress
+  {
     bool done = false;
-    enum class GlobalStep {
+    enum class GlobalStep
+    {
       PUB_HOMIE,
       PUB_NAME,
       PUB_MAC,
@@ -60,7 +74,8 @@ class BootNormal : public Boot {
       PUB_ONLINE
     } globalStep;
 
-    enum class NodeStep {
+    enum class NodeStep
+    {
       PUB_TYPE,
       PUB_PROPERTIES
     } nodeStep;
@@ -71,8 +86,6 @@ class BootNormal : public Boot {
   Timer _statsTimer;
   ExponentialBackoffTimer _mqttReconnectTimer;
   bool _setupFunctionCalled;
-  WiFiEventHandler _wifiGotIpHandler;
-  WiFiEventHandler _wifiDisconnectedHandler;
   bool _mqttConnectNotified;
   bool _mqttDisconnectNotified;
   bool _otaOngoing;
@@ -89,31 +102,31 @@ class BootNormal : public Boot {
   std::unique_ptr<char[]> _mqttClientId;
   std::unique_ptr<char[]> _mqttWillTopic;
   std::unique_ptr<char[]> _mqttPayloadBuffer;
-  std::unique_ptr<char*[]> _mqttTopicLevels;
+  std::unique_ptr<char *[]> _mqttTopicLevels;
   uint8_t _mqttTopicLevelsCount;
 
   void _wifiConnect();
-  void _onWifiGotIp(const WiFiEventStationModeGotIP& event);
-  void _onWifiDisconnected(const WiFiEventStationModeDisconnected& event);
+  void _onWifiGotIp(system_event_id_t event, system_event_info_t info);
+  void _onWifiDisconnected(system_event_id_t event, system_event_info_t info);
   void _mqttConnect();
   void _advertise();
   void _onMqttConnected();
   void _onMqttDisconnected(AsyncMqttClientDisconnectReason reason);
-  void _onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total);
+  void _onMqttMessage(char *topic, char *payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total);
   void _onMqttPublish(uint16_t id);
   void _prefixMqttTopic();
-  char* _prefixMqttTopic(PGM_P topic);
-  bool _publishOtaStatus(int status, const char* info = nullptr);
+  char *_prefixMqttTopic(PGM_P topic);
+  bool _publishOtaStatus(int status, const char *info = nullptr);
   void _endOtaUpdate(bool success, uint8_t update_error = UPDATE_ERROR_OK);
 
   // _onMqttMessage Helpers
-  void __splitTopic(char* topic);
-  bool __fillPayloadBuffer(char* topic, char* payload, const AsyncMqttClientMessageProperties& properties, size_t len, size_t index, size_t total);
-  bool __handleOTAUpdates(char* topic, char* payload, const AsyncMqttClientMessageProperties& properties, size_t len, size_t index, size_t total);
-  bool __handleBroadcasts(char* topic, char* payload, const AsyncMqttClientMessageProperties& properties, size_t len, size_t index, size_t total);
-  bool __handleResets(char* topic, char* payload, const AsyncMqttClientMessageProperties& properties, size_t len, size_t index, size_t total);
-  bool __handleRestarts(char* topic, char* payload, const AsyncMqttClientMessageProperties& properties, size_t len, size_t index, size_t total);
-  bool __handleConfig(char* topic, char* payload, const AsyncMqttClientMessageProperties& properties, size_t len, size_t index, size_t total);
-  bool __handleNodeProperty(char* topic, char* payload, const AsyncMqttClientMessageProperties& properties, size_t len, size_t index, size_t total);
+  void __splitTopic(char *topic);
+  bool __fillPayloadBuffer(char *topic, char *payload, const AsyncMqttClientMessageProperties &properties, size_t len, size_t index, size_t total);
+  bool __handleOTAUpdates(char *topic, char *payload, const AsyncMqttClientMessageProperties &properties, size_t len, size_t index, size_t total);
+  bool __handleBroadcasts(char *topic, char *payload, const AsyncMqttClientMessageProperties &properties, size_t len, size_t index, size_t total);
+  bool __handleResets(char *topic, char *payload, const AsyncMqttClientMessageProperties &properties, size_t len, size_t index, size_t total);
+  bool __handleRestarts(char *topic, char *payload, const AsyncMqttClientMessageProperties &properties, size_t len, size_t index, size_t total);
+  bool __handleConfig(char *topic, char *payload, const AsyncMqttClientMessageProperties &properties, size_t len, size_t index, size_t total);
+  bool __handleNodeProperty(char *topic, char *payload, const AsyncMqttClientMessageProperties &properties, size_t len, size_t index, size_t total);
 };
-}  // namespace HomieInternals
+} // namespace HomieInternals

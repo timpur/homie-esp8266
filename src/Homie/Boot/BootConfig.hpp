@@ -1,11 +1,20 @@
 #pragma once
 
 #include "Arduino.h"
-
 #include <functional>
+
+#ifdef ESP32
+#include <WiFi.h>
+#include <HTTPClient.h>
+#include <AsyncTCP.h>
+#elif defined(ESP8266)
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 #include <ESPAsyncTCP.h>
+#else
+#error Platform not supported
+#endif
+
 #include <ESPAsyncWebServer.h>
 #include <DNSServer.h>
 #include <ArduinoJson.h>

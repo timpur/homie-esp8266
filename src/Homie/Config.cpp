@@ -14,7 +14,7 @@ const ConfigStruct& Config::get() const {
 
 bool Config::_spiffsBegin() {
   if (!_spiffsBegan) {
-    _spiffsBegan = SPIFFS.begin();
+    _spiffsBegan = SPIFFS.begin(true);
     if (!_spiffsBegan) Interface::get().getLogger() << FPSTR(PROGMEM_CONFIG_SPIFFS_NOT_FOUND) << endl;
   }
 
